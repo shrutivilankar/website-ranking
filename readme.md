@@ -5,7 +5,7 @@ Installation
 2. Install nodejs https://nodejs.org/en/download/
 3. Open command prompt at source folder
 4. Run command npm i
-5. Run command npm run build
+5. Run command npm run build:dev
 6. Run command npm start
 7. Application is now accessible at http://localhost:8080/
 Configure backend
