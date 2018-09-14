@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-DOM';
+import ReactDOM from 'react-dom';
 import {HeaderContainer} from './HeaderContainer.js';
 
 
