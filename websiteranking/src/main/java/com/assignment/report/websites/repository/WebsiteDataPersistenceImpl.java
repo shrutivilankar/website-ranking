@@ -46,7 +46,7 @@ public class WebsiteDataPersistenceImpl implements IWebsiteDataPersistence {
 		if (websiteDataResults.size() >= filterData.getLimit())
 			websiteDataResults = websiteDataResults.subList(0, filterData.getLimit());
 
-		log.info("Retrieved Data : {} ", websiteDataResults);
+		log.debug("Retrieved Data : {} ", websiteDataResults);
 
 		return websiteDataResults;
 

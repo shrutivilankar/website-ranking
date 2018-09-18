@@ -1,1 +1,2 @@
-import ReportContainer from "./js/components/container/ReportContainer";
+import ReportContainer from "./js/components/container/ReportContainer.js";
+

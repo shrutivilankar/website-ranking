@@ -4,15 +4,20 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.assignment.report.websites.resources.helpers.SortOptionsConverter;
@@ -23,6 +28,7 @@ import com.assignment.report.websites.services.models.WebsiteDataFilterCriteria;
 
 /**
  * This rest controller defines all rest operations on website data resource
+ * 
  * @author shruti
  *
  */
@@ -40,7 +46,7 @@ public class WebsiteDataResource {
 	/**
 	 * This method allows retrieval of resource website based on criteria specified
 	 * as below param
-	 *  
+	 * 
 	 * @param date   Date must be of pattern "yyyy-MM-dd"
 	 * @param limit  Integer
 	 * @param sortBy SortBy must be of type {@link SortOptions}
@@ -68,5 +74,14 @@ public class WebsiteDataResource {
 	@InitBinder
 	public void initBinder(final WebDataBinder webdataBinder) {
 		webdataBinder.registerCustomEditor(SortOptions.class, new SortOptionsConverter());
+	}
+
+	@ExceptionHandler(Exception.class)
+	@ResponseStatus
+	public void handleAllExceptions(Exception e, HttpServletResponse response) {
+		response.addHeader("TraceId", MDC.get("X-B3-TraceId"));
+		response.addHeader("Access-Control-Expose-Headers","TraceId");
+		response.setStatus(response.getStatus());
+		
 	}
 }

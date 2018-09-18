@@ -1,8 +1,6 @@
 import React from 'react';
 import {ResultsListContainer} from './ResultsListContainer.js';
 import axios from 'axios';
-import Datetime from 'react-datetime';
-import moment from 'moment';
 
 
 const api_url = process.env.API_URL || '';
@@ -13,9 +11,10 @@ export class FiltersContainer extends React.Component{
 		this.limit = 5;
 		this.date = "";			
 		this.sortBy = "";
-		this.state = {			
-			//query : "",
-			queryResult : []
+
+		this.state = {					
+			queryResult : [],
+			error : ""
 		};
 		this.search = this.search.bind(this);
 		this.buildQuery = this.buildQuery.bind(this);
@@ -33,41 +32,60 @@ export class FiltersContainer extends React.Component{
 		this.search(q);
 	}
 	handleDateChange(event){
-		//this.setState({date : event.target.value});
+		
 		this.date =  event.target.value;
 		this.buildQuery();
 	}
 
 	handleSortOption(event){
-		//this.setState({sortBy : event.target.value});
+		
 		this.sortBy = event.target.value;
 		this.buildQuery();
 
 	}
 	handleLimitChange(event){
-		this.limit = event.target.value;
-		/*this.setState(function(state,props){
-			return {limit : event.target.value};
-		});*/
+		this.limit = event.target.value;		
 		this.buildQuery();
 
 	}
 
 	search(queryString){
-		//const userEnteredDate = event.target.valueAsDate;
-
-		//const newDate = Date.UTC(userEnteredDate.getUTCFullYear(), userEnteredDate.getUTCMonth(), userEnteredDate.getUTCDate(), 0, 0, 0);
-		console.log('in search moment -  ' + queryString);
-		//const queryString  = this.state.query + "date=" + event.target.value + "&limit=5&sortBy=LeastVisits";
+			
 		const url = api_url +"/websites" +queryString;
 		 axios.get(url)
 			  .then(({data}) => {
-			  	console.log(data);
-			  	console.log(data.data);
+			  	
 			  	this.setState(function(state,props){
-			  		return {queryResult : data};
+			  		return {
+			  			queryResult : data,
+			  			error : ""
+			  		};
 			  	});
 			  	
+			  })
+			  .catch((error) => {
+			  	if (error.response) {
+
+             		this.setState(function(state,props){
+				  		return {error : "Internal Server Error. Trace the error using trace-id : " 
+				  		+ error.response.headers.traceid};
+				  	});
+
+			  	}else if (error.request) {
+		           
+		            console.log(error.request);
+		            this.setState(function(state,props){
+				  		return {error : "Request failed. Trace the error using trace-id : " 
+				  		+ error.response.headers.traceid};
+				  	});
+		            
+		        } else {
+
+		            this.setState(function(state,props){
+				  		return {error : "Trace the error using trace-id : " 
+				  		+ error.response.headers.traceid};
+				  	});
+		        }
 			  });
 
 	}
@@ -103,15 +121,15 @@ export class FiltersContainer extends React.Component{
 							<div className="input-group-prepend">
 								<span className="input-group-text ">Limit</span>
 							</div>							
-							<select name="Limit"  onChange={this.handleLimitChange} >
-							  <option value="5">5</option>
-							  <option value="3">3</option>
-							  <option value="10">10</option>								
-							</select>							
+							<input type="number" name="Limit" min="1" step="1" placeholder="integers only" value={this.limit} onChange={this.handleLimitChange} />
+							 							
 						</div>
 					</div>
 				</nav>	
-				<ResultsListContainer searchResult={this.state.queryResult}/>
+				<div id="content" >					
+					<ResultsListContainer error={this.state.error} searchResult={this.state.queryResult}/>					
+					
+				</div>
 				
 			</div>);
 			

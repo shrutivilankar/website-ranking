@@ -5,14 +5,17 @@ import {ResultsListItemContainer} from './ResultsListItemContainer.js';
 export const ResultsListContainer = (props) => {	
 
 	return (
-		<div className="text-center">
+		<div className="text-center" >
 			{
-				(props.searchResult.length == 0 )
+				((props.error != "") 
+					? ( <div id="noResults"> <h5 className="alert alert-danger"> Error occured! {props.error}</h5></div>) 
+						:	((props.searchResult.length == 0 )
 						? <div id="noResults"> <h5>No Results Found</h5></div> 
 						: props.searchResult.map(
 										(resultItem, index) =>	
-										(<ResultsListItemContainer rank={++index} website={resultItem} /> )
-										)
+										(<ResultsListItemContainer key= {index} rank={++index} website={resultItem} /> )
+										)))
+					
 			}
 		</div>
 		);
